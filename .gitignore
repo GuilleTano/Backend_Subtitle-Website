@@ -1,2 +1,4 @@
 /node_modules
 /.env
+src/uploader/uploads/*
+!src/uploader/uploads/read.md
