@@ -1,10 +1,8 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import {controller} from "./controllers/dbController.js";
 import {indexController} from "./controllers/indexController.js"
 
-dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;

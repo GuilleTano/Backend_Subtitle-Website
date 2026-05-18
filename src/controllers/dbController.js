@@ -1,8 +1,6 @@
 import { connectDB } from "../mongDBConnection/dbConnection.js";
-import dotenv from "dotenv";
 const controller = {};
 
-dotenv.config();
 
 // Get para obtener subs (por ahora datos en general)
 controller.getSubs = async (req, res) => {
