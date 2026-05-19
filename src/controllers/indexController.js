@@ -1,6 +1,6 @@
-const indexController = {};
+const controller = {};
 
-indexController.index = async (req, res) => {
+controller.index = async (req, res) => {
   try {
     console.log("Servidor corriendo");
     res.send(`<body style="background-color: black;"><h1 style="color: white;">Servidor corriendo</h1></body>`);
@@ -11,4 +11,4 @@ indexController.index = async (req, res) => {
 }
 
 
-export {indexController}
+export { controller }

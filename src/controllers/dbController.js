@@ -1,4 +1,14 @@
-import { connectDB } from "../mongDBConnection/dbConnection.js";
+/********************* TODO ESTO PARA NO TENER QUE USAR LA BASURA DE DOTENV ************************/
+import { loadEnvFile } from "node:process";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envPath = path.resolve(__dirname, "../../.env");
+loadEnvFile(envPath);
+/***************************************************************************************************/
+
+const { connectDB } = await import("../mongDBConnection/dbConnection.js");
 const controller = {};
 
 
@@ -9,13 +19,20 @@ controller.getSubs = async (req, res) => {
         const subDB = await connectDB();
         const collection = subDB.collection("subtitles");
 
-        //const collection = subDB.collection("movies_metadata"); // DB PARA PRUEBAS
-
-        const query = {};
-        const options = {};
+        const query = {
+            series: "Lodoss-tou Senki - Record of Lodoss War"
+        };
+        const options = {
+            projection: {
+                _id: 0,
+                content: 0,
+                series: 0,
+                episode: 0
+            }
+        };
 
         const result = await collection.findOne(query, options);
-        //const result = await collection.find(query, options); 
+        //const result = await collection.find(query, options);
         // find() devuelve un cursor, no un array. Habrá que usar .toArray()
 
         res.json(result);
@@ -25,32 +42,6 @@ controller.getSubs = async (req, res) => {
         res.status(500).json({ error: 'No se pudo procesar la solicitud' });
     }
 }
-
-
-// Post para agregar subs  HACERLO ASI O CON SCRIPT INTERNO?
-controller.addSubs = async (req, res) => {
-    try {
-        // Recibe el archivo y separa su contenido
-        const { series, episode, filename, content } = req.body;
-        // Crea un objeto con la metadata y el contenido de subtitulos
-        const newSub = {
-            series: series,
-            episode: episode,
-            filename: filename,
-            content: content
-        };
-        // Conexion a DB
-        const subDB = await connectDB();
-        //const collection = subDB.collection("NOMBRE DE COLECCION");
-
-        // AQUI DEBERIA CREARSE EL DOCUMENTO Y ENVIARSE A MONGO
-
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'No se pudo procesar la solicitud' });
-    }
-}
-
 
 
 export { controller }
