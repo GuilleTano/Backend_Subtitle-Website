@@ -12,47 +12,47 @@ const { connectDB } = await import("../mongDBConnection/dbConnection.js");
 const controller = {};
 
 
-// Get para obtener subs (por ahora datos en general)
-controller.getSubs = async (req, res) => {
+// Get para obtener lista de animes
+controller.getSeries = async (req, res) => {
     try {
-
         const subDB = await connectDB();
         const collection = subDB.collection("subtitles");
 
-        const query = {
-            series: "Lodoss-tou Senki - Record of Lodoss War"
-        };
-        const options = {
-            projection: {
-                _id: 0,
-                content: 0,
-                series: 0,
-                episode: 0
-            }
-        };
-
-        const result = await collection.findOne(query, options);
-        //const result = await collection.find(query, options);
-        // find() devuelve un cursor, no un array. Habrá que usar .toArray()
+        const result = await collection.distinct("series");
+        result.sort();
 
         res.json(result);
-
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'No se pudo procesar la solicitud' });
     }
 }
 
+// Get para obtener subs de un anime especifico
+controller.getSubs = async (req, res) => {
+    try {
+        const subDB = await connectDB();
+        const collection = subDB.collection("subtitles");
+
+        const query = {
+            series: req.params.anime
+        };
+        const options = {
+            projection: {
+                _id: 0,
+                content: 0,
+                filename: 0
+            }
+        };
+
+        const cursor = await collection.find(query, options).sort({ episode: 1 });
+        const result = await cursor.toArray();
+
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'No se pudo procesar la solicitud' });
+    }
+}
 
 export { controller }
-
-
-/*// QUERY DE PRUEBAS
-const query = {
-    original_title: "Toy Story"
-};
-const options = {
-    projection: {
-        original_title: 1
-    }
-};*/
