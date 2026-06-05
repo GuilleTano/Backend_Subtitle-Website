@@ -41,7 +41,7 @@ controller.getSubs = async (req, res) => {
             projection: {
                 _id: 0,
                 content: 0,
-                filename: 0
+                //filename: 0
             }
         };
 

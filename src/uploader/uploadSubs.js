@@ -45,7 +45,7 @@ async function uploadFiles() {
         await collection.insertOne(objSub);
 
         console.log("Se subió: " + fileName);
-        break
+        //break
     }
 }
 
