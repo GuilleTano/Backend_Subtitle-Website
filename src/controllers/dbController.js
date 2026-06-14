@@ -11,15 +11,13 @@ loadEnvFile(envPath);
 const { connectDB } = await import("../mongDBConnection/dbConnection.js");
 const controller = {};
 
-
 // Get para obtener lista de animes
 controller.getSeries = async (req, res) => {
     try {
         const subDB = await connectDB();
-        const collection = subDB.collection("subtitles");
+        const collection = subDB.collection("series");
 
-        const result = await collection.distinct("series");
-        result.sort();
+        const result = await collection.find({}).toArray();
 
         res.json(result);
     } catch (err) {
