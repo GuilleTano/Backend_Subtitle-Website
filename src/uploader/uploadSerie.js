@@ -16,7 +16,7 @@ const { connectDB } = await import("../mongDBConnection/dbConnection.js");
 // FORMULARIO DONDE CARGAR LOS DATOS DE LA SERIE Y SU IMAGEN
 const newImage = {
     name: "Natsu no Arashi!",
-    slug: "Natsu-no-Arashi!",
+    slug: "natsu-no-arashi",
     type: "jpg"
 }
 

@@ -3,11 +3,14 @@ import {controller} from "../controllers/dbController.js";
 
 const dbRouters = express.Router();
 
-// Pedir la lista de subs de una serie
-dbRouters.get("/get-subs/:anime", controller.getSubs); // /get-subs/Lodoss-tou Senki - Record of Lodoss War
-
 // Pedir la lista de series
-dbRouters.get("/get-series", controller.getSeries);
+dbRouters.get("/series", controller.getSeriesList);
+
+// Pedir info de una serie especifica
+dbRouters.get("/series/:anime", controller.getSerie);
+
+// Pedir la lista de subs de una serie
+dbRouters.get("/subtitles/:anime", controller.getSubs);
 
 
 export { dbRouters }

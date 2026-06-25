@@ -11,8 +11,8 @@ loadEnvFile(envPath);
 const { connectDB } = await import("../mongDBConnection/dbConnection.js");
 const controller = {};
 
-// Get para obtener lista de animes
-controller.getSeries = async (req, res) => {
+// Obtener lista de animes
+controller.getSeriesList = async (req, res) => {
     try {
         const subDB = await connectDB();
         const collection = subDB.collection("series");
@@ -26,20 +26,45 @@ controller.getSeries = async (req, res) => {
     }
 }
 
-// Get para obtener subs de un anime especifico
+// Obtener info de un anime especifico
+controller.getSerie = async (req, res) => {
+    try {
+        const subDB = await connectDB();
+        const collection = subDB.collection("series");
+
+        const serie = await collection.findOne({
+            slug: req.params.anime
+        });
+
+        if (!serie) {
+            return res.status(404).json({
+                error: "Serie no encontrada"
+            });
+        }
+
+        res.json(serie);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: "No se pudo procesar la solicitud"
+        });
+    }
+};
+
+// Obtener subs de un anime especifico
 controller.getSubs = async (req, res) => {
     try {
         const subDB = await connectDB();
         const collection = subDB.collection("subtitles");
 
         const query = {
-            series: req.params.anime
+            slug: req.params.anime
         };
         const options = {
             projection: {
                 _id: 0,
                 content: 0,
-                //filename: 0
             }
         };
 

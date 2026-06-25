@@ -1,4 +1,3 @@
-import fs from "fs/promises";
 import path from "node:path";
 /********************* TODO ESTO PARA NO TENER QUE USAR LA BASURA DE DOTENV ************************/
 import { loadEnvFile } from "node:process";
@@ -23,42 +22,26 @@ function generateSlug(text) {
         .replace(/-+/g, "-");             // Evita "--"
 }
 
-const uploads = "./uploads";
-const fileList = await fs.readdir(uploads); // Lee el directorio y devuelve un array con los nombres de los archivos
+async function addAttribute() {
 
-async function uploadFiles() {
+    const serie = "Natsu no Arashi!"
+    const slug = generateSlug(serie);
 
     const subDB = await connectDB();
     const collection = subDB.collection("subtitles");
 
-    for (let file of fileList) {
-
-        if (path.extname(file) !== ".ass") continue
-
-        const fileName = file;
-        const namePart = path.parse(fileName).name.split("_", 2);
-        const pathFile = path.join(uploads, fileName);
-        const contentFile = await fs.readFile(pathFile, "utf-8");
-
-        const objSub = {
-            series: namePart[0],
-            slug: generateSlug(namePart[0]),
-            episode: parseInt(namePart[1], 10),
-            filename: fileName,
-            content: contentFile
+    const result = await collection.updateMany(
+        { series: serie },
+        {
+            $set: {
+                slug: slug
+            }
         }
+    );
 
-        const sub = await collection.findOne({ filename: fileName });
-        if (sub) {
-            console.log("Ya existe " + fileName);
-            continue
-        }
-
-        await collection.insertOne(objSub);
-
-        console.log("Se subió: " + fileName);
-        //break
-    }
+    console.log(`Se agregó el slug: ${slug} a ${serie}`);
+    console.log(`Se actualizó "${serie}" (${result.modifiedCount} documentos).`
+);
 }
 
-uploadFiles();
+addAttribute();
